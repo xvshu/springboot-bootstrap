@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>-用户管理</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/tem/font-awesome.css" rel="stylesheet">
+    <link href="/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="/css/tem/animate.css" rel="stylesheet">
+    <link href="/css/tem/style.css?v=4.1.0" rel="stylesheet">
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>用户<small>操作</small></h5>
+                        <div class="ibox-tools">
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div id="table_temuser_toolbar" class="btn-group">
+                             <button id="btn_add" type="button" class="btn btn-success" onclick="">
+                                 <i class="fa fa-home"></i>
+                                 <span class="nav-label">新增</span>
+                             </button>
+                            <button id="remove" type="button" class="btn btn-danger" onclick="" >
+                                <i class="fa fa-remove"></i>
+                                <span class="nav-label">删除</span>
+                            </button>
+                        </div>
+                        <table class="table table-hover"
+                               id="cusTable"
+                               data-pagination="true"
+                               data-show-refresh="true"
+                               data-show-toggle="true"
+                               data-showColumns="true">
+                            <thead>
+                            <tr>
+                                <th data-field="userId">ID</th>
+                                <th data-field="userName">用户名</th>
+                                <th data-field="password">密码</th>
+                                <th data-field="phone">手机号</th>
+                                <th data-field="tem">企业ID</th>
+                                <th data-field="createTime">创建时间</th>
+                                <th data-field="updateTime">修改时间</th>
+                            </tr>
+                            </thead>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全局js -->
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- 自定义js -->
+    <script src="/js/tem/content.js?v=1.0.0"></script>
+
+
+    <!-- Bootstrap table -->
+    <script src="/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+    <script src="/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/js/plugins/layer/layer.min.js"></script>
+
+    <!-- Page-Level Scripts -->
+    <script>
+        function initTable() {
+            $('#cusTable').bootstrapTable('destroy');
+            $("#cusTable").bootstrapTable({
+                method: "post",
+                url:"/tem_user/getall",
+                striped: true,
+                pagination: true,
+                pageSize: 10,
+                pageNumber:1,
+                pageList: [10, 15, 20, 25],
+                search: false,
+                showColumns: true,
+                howRefresh: true,
+                sidePagination: "server",
+                queryParamsType : "undefined",
+                queryParams: function queryParams(params) {
+                    //设置查询参数
+                    var param = {
+                        pageNumber: params.pageNumber,
+                        pageSize: params.pageSize,
+                        orderNum : $("#orderNum").val()
+                    };
+                    return param;
+                },
+                onLoadSuccess: function(){
+                    layer.msg("加载成功");
+                },
+                onLoadError: function(){
+                    layer.msg("加载数据失败", {time : 1500, icon : 2});
+                }
+            });
+        }
+        $(document).ready(function () {
+            initTable();
+        });
+
+    </script>
+
+
+
+</body>
+</html>

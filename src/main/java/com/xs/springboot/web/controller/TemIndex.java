@@ -14,8 +14,13 @@ public class TemIndex {
      * @return
      */
     @RequestMapping("/tem_index")
-    public String login(){
+    public String index(){
         return "Tem_index";
+    }
+
+    @RequestMapping("/welcome")
+    public String welcome(){
+        return "com/welcome";
     }
 
 }

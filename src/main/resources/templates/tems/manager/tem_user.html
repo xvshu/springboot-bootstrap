@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title>-用户管理</title>
+    <title>用户管理</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
 
-    <link rel="shortcut icon" href="favicon.ico"> <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/tem/font-awesome.css" rel="stylesheet">
-    <link href="/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="/ico/favicon.png">
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/tem/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/tem/bootstrap.min.css" rel="stylesheet">
     <link href="/css/tem/animate.css" rel="stylesheet">
     <link href="/css/tem/style.css?v=4.1.0" rel="stylesheet">
 </head>
@@ -26,24 +27,25 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <div id="table_temuser_toolbar" class="btn-group">
-                             <button id="btn_add" type="button" class="btn btn-success" onclick="">
-                                 <i class="fa fa-home"></i>
-                                 <span class="nav-label">新增</span>
-                             </button>
-                            <button id="remove" type="button" class="btn btn-danger" onclick="" >
+                        <div class="btn-group hidden-xs" id="table_temuser_toolbar" role="group">
+                            <button type="button" onclick="initTable()" class="btn btn-primary" aria-pressed="false">
+                                <i class="fa fa-refresh"></i>
+                                刷新
+                            </button>
+                            <button type="button" class="btn btn-primary" aria-pressed="false" data-toggle="modal" data-target="#AddTemUserModal"  data-backdrop="static">
+                                <i class="fa fa-plus"></i>
+                                新增
+                            </button>
+                            <button type="button" onclick="deleteTemUsers()" class="btn btn-primary " aria-pressed="false">
                                 <i class="fa fa-remove"></i>
-                                <span class="nav-label">删除</span>
+                                删除
                             </button>
                         </div>
-                        <table class="table table-hover"
-                               id="cusTable"
-                               data-pagination="true"
-                               data-show-refresh="true"
-                               data-show-toggle="true"
-                               data-showColumns="true">
+
+                        <table id="cusTable">
                             <thead>
                             <tr>
+                                <th data-field="state" data-checkbox="true"></th>
                                 <th data-field="userId">ID</th>
                                 <th data-field="userName">用户名</th>
                                 <th data-field="password">密码</th>
@@ -59,6 +61,49 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="modal fade" id="AddTemUserModal" tabindex="-1" role="dialog" aria-labelledby="AddTemUserModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">新增Tem用户</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="add_tem_user_form" method="post" enctype="multipart/form-data" onsubmit="return false">
+                        <div class="form-group">
+                            <label for="add_userName" class="col-sm-2 control-label">用户名</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="add_userName" name="userName" placeholder="请输入用户名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="add_password" class="col-sm-2 control-label">密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="add_password" name="password" placeholder="请输入密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="add_phone" class="col-sm-2 control-label">手机号</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="add_phone" name="phone" placeholder="请输入手机号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="add_tem" class="col-sm-2 control-label">企业ID</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="add_tem" name="tem" placeholder="请输入企业ID">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="add_tem_user()">新增</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
     </div>
 
     <!-- 全局js -->
@@ -86,10 +131,8 @@
                 pagination: true,
                 pageSize: 10,
                 pageNumber:1,
-                pageList: [10, 15, 20, 25],
+                pageList: [10,20,50,100],
                 search: false,
-                showColumns: true,
-                howRefresh: true,
                 sidePagination: "server",
                 queryParamsType : "undefined",
                 queryParams: function queryParams(params) {
@@ -102,7 +145,7 @@
                     return param;
                 },
                 onLoadSuccess: function(){
-                    layer.msg("加载成功");
+                    layer.msg("加载数据成功",{time : 1000});
                 },
                 onLoadError: function(){
                     layer.msg("加载数据失败", {time : 1500, icon : 2});
@@ -112,6 +155,63 @@
         $(document).ready(function () {
             initTable();
         });
+
+        function add_tem_user(){
+            var formData = new FormData($("#add_tem_user_form")[0]);
+            $.ajax({
+                url : "/tem_user/add",
+                type : 'POST',
+                data : formData,
+                cache: false,
+                async: false,
+                processData : false,  //必须false才会避开jQuery对 formdata 的默认处理
+                contentType : false,  //必须false才会自动加上正确的Content-Type
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result) {
+                        $('#AddTemUserModal').modal('hide')
+                        layer.msg("新增数据成功",{time : 1000});
+                        initTable();
+                    }else{
+                        layer.msg("新增数据失败,请联系管理员", {time : 1500, icon : 2});
+                    }
+
+                },
+                error : function() {
+                    layer.msg("新增数据失败", {time : 1500, icon : 2});
+                }
+            });
+
+        }
+
+        function deleteTemUsers(){
+            var rows = $("#cusTable").bootstrapTable("getSelections");
+            var userids=[];
+            for(var i=0;i<rows.length;i++){
+                userids.push(rows[i].userId);
+            }
+            alert("选中了"+userids.length+"条数据");
+
+            $.ajax({
+                url : "/tem_user/delete",
+                type : 'POST',
+                contentType: "application/json;charset=utf-8",
+                data : JSON.stringify(userids),
+                success: function (result) {
+                    console.log(result);//打印服务端返回的数据(调试用)
+                    if (result) {
+                        layer.msg("删除数据成功",{time : 1000});
+                        initTable();
+                    }else{
+                        layer.msg("删除数据失败,请联系管理员", {time : 1500, icon : 2});
+                    }
+
+                },
+                error : function() {
+                    layer.msg("删除数据失败,请联系管理员", {time : 1500, icon : 2});
+                }
+            });
+        }
 
     </script>
 

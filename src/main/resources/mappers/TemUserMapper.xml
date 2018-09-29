@@ -141,4 +141,66 @@
       </if>
     </set>
   </select>
+
+  <select id="sizeByRecord" parameterType="com.xs.springboot.web.model.TemUser" resultType="java.lang.Integer">
+    select
+    count(1)
+    from t_tem_user
+    where 1=1
+    <set>
+      <if test="userName != null">
+        AND user_name = #{userName,jdbcType=VARCHAR}
+      </if>
+      <if test="password != null">
+        AND password = #{password,jdbcType=VARCHAR}
+      </if>
+      <if test="phone != null">
+        AND phone = #{phone,jdbcType=VARCHAR}
+      </if>
+      <if test="tem != null">
+        AND tem = #{tem,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null">
+        AND create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTime != null">
+        AND update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+    </set>
+  </select>
+
+  <select id="pageByRecord" parameterType="map" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from t_tem_user
+    where 1=1
+    <if test="record != null">
+      <set>
+        <if test="record.userName != null">
+          AND user_name = #{userName,jdbcType=VARCHAR}
+        </if>
+        <if test="record.password != null">
+          AND password = #{password,jdbcType=VARCHAR}
+        </if>
+        <if test="record.phone != null">
+          AND phone = #{phone,jdbcType=VARCHAR}
+        </if>
+        <if test="record.tem != null">
+          AND tem = #{tem,jdbcType=VARCHAR}
+        </if>
+      </set>
+      <if test="page != null and page.pageNumber != null and page.pageSize != null">
+        limit  ${(page.pageNumber-1)*page.pageSize},${page.pageSize}
+      </if>
+    </if>
+
+  </select>
+
+  <delete id="deleteByIDS">
+    delete from t_tem_user where user_id in
+    <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+       #{item}
+    </foreach>
+  </delete>
+
 </mapper>

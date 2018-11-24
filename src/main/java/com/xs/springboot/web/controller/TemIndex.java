@@ -18,6 +18,15 @@ public class TemIndex {
         return "Tem_index";
     }
 
+    /**
+     * 登陆
+     * @return
+     */
+    @RequestMapping("/")
+    public String defaulturl(){
+        return index();
+    }
+
     @RequestMapping("/welcome")
     public String welcome(){
         return "com/welcome";

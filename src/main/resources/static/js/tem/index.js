@@ -1,9 +1,10 @@
 $(function(){
     //菜单点击
-    J_iframe
     $(".J_menuItem").on('click',function(){
         var url = $(this).attr('href');
-        $("#J_iframe").attr('src',url);
+        var name = this.text;
+        var item = {'id':name,'name':name,'url':url,'closable':true};
+        closableTab.addTab(item);
         return false;
     });
 });

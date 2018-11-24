@@ -3806,15 +3806,15 @@ nav.page-tabs .page-tabs-content {
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
-    background: none;
-    border-color: #dddddd #dddddd rgba(0, 0, 0, 0);
-    border-bottom: #f0f3f4;
+    background: #423e3e;
+    border-color: #423e3e #363131 rgba(38, 37, 37, 0);
+    border-bottom: #333738;
     -webkit-border-image: none;
     -o-border-image: none;
     border-image: none;
     border-style: solid;
     border-width: 1px;
-    color: #555555;
+    color: #f9f6f6;
     cursor: default;
 }
 
@@ -3824,15 +3824,19 @@ nav.page-tabs .page-tabs-content {
 }
 
 .nav-tabs > li > a {
-    color: #A7B1C2;
+    color: #6A6E74;
     font-weight: 600;
     padding: 10px 20px 10px 25px;
 }
 
 .nav-tabs > li > a:hover,
 .nav-tabs > li > a:focus {
-    background-color: #e6e6e6;
-    color: #676a6c;
+    background-color: #252627;
+    color: #f6f6f6;
+}
+
+.nav-tabs > li > a:hover {
+    border-color: #2d2c2c #2c2a2a #232020;
 }
 
 .ui-tab .tab-content {

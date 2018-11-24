@@ -1,6 +1,7 @@
 package com.xs.springboot.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xs.springboot.web.model.TemUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class TemLogin {
      */
     @RequestMapping(value="/tem_login/check",method= RequestMethod.POST)
     @ResponseBody
-    public String checkuser(@RequestBody JSONObject params){
+    public String checkuser(@RequestBody JSONObject params,HttpServletRequest request){
         String username=params.getString("username");
         String password=params.getString("password");
         System.out.println("username:"+String.valueOf(username));
@@ -39,9 +40,24 @@ public class TemLogin {
                 password!=null&&
                 username.equals(password)&&
                 username.equals("admin")){
+
+            TemUser user = new TemUser() ;
+            user.setUserName("admin");
+            request.getSession().setAttribute("user",user);
+
             result="suc";
         }
         return result;
+    }
+
+    /**
+     * 登陆
+     * @return
+     */
+    @RequestMapping(value="/tem_logout")
+    public String logout(HttpServletRequest request){
+        request.getSession().setAttribute("user",null);
+        return login();
     }
 
 
